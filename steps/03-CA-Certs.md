@@ -87,7 +87,7 @@ Kubernetes использует специальный режим авториз
 Команда `openssl` не принимает альтернативные имена в качестве параметра командной строки. Поэтому мы создаем `conf` файл:
 
 ```
-cat > openssl-pi-master-01.cnf <<EOF
+cat > openssl-pi-worker-01.cnf <<EOF
 [req]
 req_extensions = v3_req
 distinguished_name = req_distinguished_name
@@ -97,17 +97,17 @@ basicConstraints = CA:FALSE
 keyUsage = nonRepudiation, digitalSignature, keyEncipherment
 subjectAltName = @alt_names
 [alt_names]
-DNS.1 = pi-master-01.local
-IP.1 = 192.168.66.101
+DNS.1 = pi-worker-01.local
+IP.1 = 192.168.66.111
 EOF
 ```
 
 Создадим сертификат и закрытый ключ для нашего единственного рабочего узла Kubernetes:
 
 ```
-openssl genrsa -out node01.key 2048
-openssl req -new -key node01.key -subj "/CN=system:node:node01/O=system:nodes" -out node01.csr -config openssl-node01.cnf
-openssl x509 -req -in node01.csr -CA ca.crt -CAkey ca.key -CAcreateserial  -out node01.crt -extensions v3_req -extfile openssl-node01.cnf -days 1000
+openssl genrsa -out pi-worker-01.key 2048 
+openssl req -new -key pi-worker-01.key -subj "/CN=system:node:pi-worker-01.local/O=system:nodes" -out pi-worker-01.csr -config openssl-pi-worker-01.cnf 
+openssl x509 -req -in pi-worker-01.csr -CA ca.crt -CAkey ca.key -CAcreateserial  -out pi-worker-01.crt -extensions v3_req -extfile openssl-pi-worker-01.cnf -days 3650
 ```
 
 Получили:
@@ -124,7 +124,7 @@ node01.crt
 ```
 openssl genrsa -out kube-controller-manager.key 2048
 openssl req -new -key kube-controller-manager.key -subj "/CN=system:kube-controller-manager" -out kube-controller-manager.csr
-openssl x509 -req -in kube-controller-manager.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out kube-controller-manager.crt -days 1000
+openssl x509 -req -in kube-controller-manager.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out kube-controller-manager.crt -days 3650
 ```
 
 Получили:
@@ -143,7 +143,7 @@ kube-controller-manager.crt
 ```
 openssl genrsa -out kube-proxy.key 2048
 openssl req -new -key kube-proxy.key -subj "/CN=system:kube-proxy" -out kube-proxy.csr
-openssl x509 -req -in kube-proxy.csr -CA ca.crt -CAkey ca.key -CAcreateserial  -out kube-proxy.crt -days 1000
+openssl x509 -req -in kube-proxy.csr -CA ca.crt -CAkey ca.key -CAcreateserial  -out kube-proxy.crt -days 3650
 ```
 
 Получили:
@@ -161,7 +161,7 @@ kube-proxy.crt
 ```
 openssl genrsa -out kube-scheduler.key 2048
 openssl req -new -key kube-scheduler.key -subj "/CN=system:kube-scheduler" -out kube-scheduler.csr
-openssl x509 -req -in kube-scheduler.csr -CA ca.crt -CAkey ca.key -CAcreateserial  -out kube-scheduler.crt -days 1000
+openssl x509 -req -in kube-scheduler.csr -CA ca.crt -CAkey ca.key -CAcreateserial  -out kube-scheduler.crt -days 3650
 ```
 
 Получили:
@@ -195,10 +195,9 @@ DNS.2 = kubernetes.default
 DNS.3 = kubernetes.default.svc
 DNS.4 = kubernetes.default.svc.cluster.local
 IP.1 = 10.96.0.1
-IP.2 = 192.168.66.11
-IP.3 = 192.168.66.12
-IP.4 = 192.168.66.30
-IP.5 = 127.0.0.1
+IP.2 = 192.168.88.101
+IP.3 = 192.168.88.1
+IP.4 = 127.0.0.1
 EOF
 ```
 
@@ -207,7 +206,7 @@ EOF
 ```
 openssl genrsa -out kube-apiserver.key 2048
 openssl req -new -key kube-apiserver.key -subj "/CN=kubernetes" -out kube-apiserver.csr -config openssl.cnf
-openssl x509 -req -in kube-apiserver.csr -CA ca.crt -CAkey ca.key -CAcreateserial  -out kube-apiserver.crt -extensions v3_req -extfile openssl.cnf -days 1000
+openssl x509 -req -in kube-apiserver.csr -CA ca.crt -CAkey ca.key -CAcreateserial  -out kube-apiserver.crt -extensions v3_req -extfile openssl.cnf -days 3650
 ```
 
 Получили:
@@ -235,9 +234,8 @@ basicConstraints = CA:FALSE
 keyUsage = nonRepudiation, digitalSignature, keyEncipherment
 subjectAltName = @alt_names
 [alt_names]
-IP.1 = 192.168.66.11
-IP.2 = 192.168.66.12
-IP.3 = 127.0.0.1
+IP.1 = 192.168.88.101
+IP.2 = 127.0.0.1
 EOF
 ```
 
@@ -246,7 +244,7 @@ EOF
 ```
 openssl genrsa -out etcd-server.key 2048
 openssl req -new -key etcd-server.key -subj "/CN=etcd-server" -out etcd-server.csr -config openssl-etcd.cnf
-openssl x509 -req -in etcd-server.csr -CA ca.crt -CAkey ca.key -CAcreateserial  -out etcd-server.crt -extensions v3_req -extfile openssl-etcd.cnf -days 1000
+openssl x509 -req -in etcd-server.csr -CA ca.crt -CAkey ca.key -CAcreateserial  -out etcd-server.crt -extensions v3_req -extfile openssl-etcd.cnf -days 3650
 ```
 
 Получили:
@@ -265,7 +263,7 @@ Kubernetes `Controller Manager` использует пару ключей дл�
 ```
 openssl genrsa -out service-account.key 2048
 openssl req -new -key service-account.key -subj "/CN=service-accounts" -out service-account.csr
-openssl x509 -req -in service-account.csr -CA ca.crt -CAkey ca.key -CAcreateserial  -out service-account.crt -days 1000
+openssl x509 -req -in service-account.csr -CA ca.crt -CAkey ca.key -CAcreateserial  -out service-account.crt -days 3650
 ```
 
 Получили:
@@ -301,4 +299,4 @@ done
 будут использованы для создания конфигурационных файлов в следующей главе. Эти сертификаты нужно внести в файлы конфигурации для аутентификации клиента. Затем мы скопируем эти файлы конфигурации на другие мастера*
 
 
-Следущий шаг: [Создание kubeconfigs для компонентов](https://github.com/rotoro-cloud/hardway-cluster/blob/main/steps/04-Kubeconfigs.md)
+Следущий шаг: [Создание kubeconfigs для компонентов](steps/04-Kubeconfigs.md)

@@ -44,4 +44,4 @@ done
 
 Справка в [документации](https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data/#encrypting-your-data).
 
-Следущий шаг: [Установка etcd](https://github.com/rotoro-cloud/hardway-cluster/blob/main/steps/06-ETCD.md)
+Следущий шаг: [Установка etcd](steps/06-ETCD.md)

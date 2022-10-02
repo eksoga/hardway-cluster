@@ -199,4 +199,4 @@ for instance in controlplane01 controlplane02; do
 done
 ```
 
-Следущий шаг: [Создание ключа для шифрования secrets](https://github.com/rotoro-cloud/hardway-cluster/blob/main/steps/05-Encrypt-at-Rest.md)
+Следущий шаг: [Создание ключа для шифрования secrets](steps/05-Encrypt-at-Rest.md)

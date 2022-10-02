@@ -50,7 +50,7 @@
 По умолчанию он настроен на создание 2 мастеров, 1 воркера и 1 лоадбаленсера.
 
 ```
-git clone https://github.com/rotoro-cloud/hardway-cluster.git
+git clone https://github.com/eksoga/hardway-cluster.git
 cd hardway-cluster
 vagrant up
 ```
@@ -113,4 +113,4 @@ sudo systemctl restart haproxy
 - Ты можешь подключиться по SSH к будущим нодам
 - Все ноды и балансер пингуют друг друга
 
-Следущий шаг: [Подготовка SSH и инструментов](https://github.com/rotoro-cloud/hardway-cluster/blob/main/steps/02-SSH-Utils.md)
+Следущий шаг: [Подготовка SSH и инструментов](steps/02-SSH-Utils.md)
