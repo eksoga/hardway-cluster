@@ -87,7 +87,7 @@ Kubernetes использует специальный режим авториз
 Команда `openssl` не принимает альтернативные имена в качестве параметра командной строки. Поэтому мы создаем `conf` файл:
 
 ```
-cat > openssl-node01.cnf <<EOF
+cat > openssl-pi-master-01.cnf <<EOF
 [req]
 req_extensions = v3_req
 distinguished_name = req_distinguished_name
@@ -97,8 +97,8 @@ basicConstraints = CA:FALSE
 keyUsage = nonRepudiation, digitalSignature, keyEncipherment
 subjectAltName = @alt_names
 [alt_names]
-DNS.1 = node01
-IP.1 = 192.168.66.21
+DNS.1 = pi-master-01.local
+IP.1 = 192.168.66.101
 EOF
 ```
 
